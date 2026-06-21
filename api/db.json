@@ -1,0 +1,192 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "123456",
+      "fullname": "Admin",
+      "email": "admin@gundamshop.com",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "kira",
+      "password": "123456",
+      "fullname": "Kira Yamato",
+      "email": "kira@gmail.com",
+      "role": "customer"
+    },
+    {
+      "username": "customer1",
+      "password": "123456",
+      "fullname": "dangkhoa",
+      "email": "khoa@gmail.com",
+      "role": "customer",
+      "id": 3
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "RX-78-2 Gundam",
+      "brand": "Bandai",
+      "grade": "RG",
+      "scale": "1/144",
+      "price": 850000,
+      "quantity": 15,
+      "image": "/images/gundam1.png",
+      "description": "Real Grade 1/144 của RX-78-2 với khung xương chi tiết và khả năng tạo dáng cao."
+    },
+    {
+      "id": 2,
+      "name": "Wing Gundam Zero EW",
+      "brand": "Bandai",
+      "grade": "MG",
+      "scale": "1/100",
+      "price": 1200000,
+      "quantity": 10,
+      "image": "/images/gundam2.png",
+      "description": "Master Grade Wing Zero Endless Waltz với đôi cánh thiên thần nổi tiếng."
+    },
+    {
+      "id": 3,
+      "name": "Gundam Exia",
+      "brand": "Bandai",
+      "grade": "MG",
+      "scale": "1/100",
+      "price": 1100000,
+      "quantity": 0,
+      "image": "/images/gundam3.png",
+      "description": "Mobile Suit chính của Setsuna F. Seiei trong Gundam 00 với GN Sword đặc trưng."
+    },
+    {
+      "id": 4,
+      "name": "Unicorn Gundam",
+      "brand": "Bandai",
+      "grade": "RG",
+      "scale": "1/144",
+      "price": 950000,
+      "quantity": 20,
+      "image": "/images/gundam4.png",
+      "description": "RX-0 Unicorn Gundam có khả năng chuyển đổi giữa Unicorn Mode và Destroy Mode."
+    },
+    {
+      "id": 5,
+      "name": "Barbatos Lupus Rex",
+      "brand": "Bandai",
+      "grade": "HG",
+      "scale": "1/144",
+      "price": 650000,
+      "quantity": 25,
+      "image": "/images/gundam5.png",
+      "description": "High Grade Barbatos Lupus Rex với thiết kế hoang dã từ Iron-Blooded Orphans."
+    },
+    {
+      "name": "Unicon Gundam",
+      "brand": "Bandai",
+      "grade": "HG",
+      "price": 85000,
+      "quantity": 10,
+      "image": "/images/gundam1.png",
+      "description": "Unicon Gundam",
+      "scale": "1/144",
+      "id": 6
+    }
+  ],
+  "carts": [
+    {
+      "userId": 2,
+      "productId": 1,
+      "quantity": 1,
+      "id": 1
+    },
+    {
+      "userId": 3,
+      "productId": 5,
+      "quantity": 1,
+      "id": 2
+    }
+  ],
+  "favorites": [
+    {
+      "userId": 2,
+      "productId": 1,
+      "id": 1
+    }
+  ],
+  "orders": [
+    {
+      "userId": 3,
+      "total": 12000000,
+      "status": "pending",
+      "createdAt": "2026-06-20T06:27:01.815Z",
+      "id": 1
+    },
+    {
+      "userId": 3,
+      "total": 12000000,
+      "status": "pending",
+      "createdAt": "2026-06-20T06:27:05.332Z",
+      "id": 2
+    },
+    {
+      "userId": 3,
+      "total": 12000000,
+      "status": "pending",
+      "createdAt": "2026-06-20T06:27:09.823Z",
+      "id": 3
+    },
+    {
+      "userId": 3,
+      "total": 12000000,
+      "status": "pending",
+      "createdAt": "2026-06-20T06:27:31.557Z",
+      "id": 4
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "address": "Vinh long",
+        "note": "None"
+      },
+      "total": 13200000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-06-20T11:12:39.338Z",
+      "id": 5
+    }
+  ],
+  "orderItems": [
+    {
+      "orderId": 2,
+      "productId": 2,
+      "quantity": 10,
+      "price": 1200000,
+      "id": 1
+    },
+    {
+      "orderId": 3,
+      "productId": 2,
+      "quantity": 10,
+      "price": 1200000,
+      "id": 2
+    },
+    {
+      "orderId": 4,
+      "productId": 2,
+      "quantity": 10,
+      "price": 1200000,
+      "id": 3
+    },
+    {
+      "orderId": 5,
+      "productId": 3,
+      "quantity": 12,
+      "price": 1100000,
+      "id": 4
+    }
+  ]
+}

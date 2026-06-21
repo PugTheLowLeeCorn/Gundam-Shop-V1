@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gundam-dark: #0c0c0c;
+  --color-gundam-darker: #050505;
+  --color-gundam-card: #161616;
+  --color-gundam-surface: #1e1e1e;
+  --color-gundam-accent: #e8943a;
+  --color-gundam-accent-hover: #d47a28;
+  --color-gundam-accent-light: #f5b55a;
+  --color-gundam-cream: #f8f4ed;
+  --color-gundam-muted: #9ca3af;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-gundam-dark);
+  color: #ffffff;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.text-accent {
+  color: var(--color-gundam-accent);
+}
+
+.bg-accent {
+  background-color: var(--color-gundam-accent);
+}
+
+.bg-accent:hover {
+  background-color: var(--color-gundam-accent-hover);
+}
+
+.hero-gradient {
+  background:
+    radial-gradient(ellipse at 25% 50%, rgba(232, 148, 58, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(232, 148, 58, 0.08) 0%, transparent 40%),
+    linear-gradient(135deg, #050505 0%, #0c0c0c 50%, #111 100%);
+}
+
+.cinematic-overlay {
+  background: linear-gradient(
+    to right,
+    rgba(5, 5, 5, 0.95) 0%,
+    rgba(5, 5, 5, 0.75) 50%,
+    rgba(5, 5, 5, 0.4) 100%
+  );
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(232, 148, 58, 0.15);
+  border-color: rgba(232, 148, 58, 0.4);
+}
+
+.grade-card-hover {
+  transition: all 0.3s ease;
+}
+
+.grade-card-hover:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(232, 148, 58, 0.2);
+}
+
+.btn-primary {
+  background-color: var(--color-gundam-accent);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-gundam-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(232, 148, 58, 0.35);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(232, 148, 58, 0.4);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  padding: 0.625rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-gundam-accent);
+  color: var(--color-gundam-accent);
+}
+
+.input-field {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 0.875rem 1.25rem;
+  color: white;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.input-field:focus {
+  border-color: var(--color-gundam-accent);
+  box-shadow: 0 0 0 3px rgba(232, 148, 58, 0.15);
+}
+
+.input-field-light {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #111;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-field-light:focus {
+  border-color: var(--color-gundam-accent);
+}
+
+.section-cream {
+  background-color: var(--color-gundam-cream);
+  color: #1a1a1a;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(232, 148, 58, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(232, 148, 58, 0.4);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
