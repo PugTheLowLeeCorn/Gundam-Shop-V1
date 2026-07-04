@@ -22,7 +22,16 @@
       "fullname": "dangkhoa",
       "email": "khoa@gmail.com",
       "role": "customer",
-      "id": 3
+      "id": 3,
+      "phone": "0916612354",
+      "shippingAddress": {
+        "provinceCode": "52",
+        "provinceName": "Tỉnh Gia Lai",
+        "wardCode": "21661",
+        "wardName": "Phường Hoài Nhơn Tây",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nPhường Hoài Nhơn Tây,\nTỉnh Gia Lai"
+      }
     }
   ],
   "products": [
@@ -77,7 +86,7 @@
       "grade": "HG",
       "scale": "1/144",
       "price": 650000,
-      "quantity": 25,
+      "quantity": 18,
       "image": "/images/gundam5.png",
       "description": "High Grade Barbatos Lupus Rex với thiết kế hoang dã từ Iron-Blooded Orphans."
     },
@@ -91,6 +100,17 @@
       "description": "Unicon Gundam",
       "scale": "1/144",
       "id": 6
+    },
+    {
+      "name": "Gundam X",
+      "brand": "Bandai",
+      "grade": "SD",
+      "price": 800000,
+      "quantity": 17,
+      "image": "/images/gundam1.png",
+      "description": "new gundam",
+      "scale": "1/144",
+      "id": 7
     }
   ],
   "carts": [
@@ -99,12 +119,6 @@
       "productId": 1,
       "quantity": 1,
       "id": 1
-    },
-    {
-      "userId": 3,
-      "productId": 5,
-      "quantity": 1,
-      "id": 2
     }
   ],
   "favorites": [
@@ -162,6 +176,258 @@
       "status": "shipping",
       "createdAt": "2026-06-20T11:12:39.338Z",
       "id": 5
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "33",
+        "provinceName": "Tỉnh Hưng Yên",
+        "wardCode": "12127",
+        "wardName": "Phường Thượng Hồng",
+        "streetAddress": "Vinh Long",
+        "fullShippingAddress": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên",
+        "address": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên"
+      },
+      "total": 1950000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:52:52.345Z",
+      "id": 6
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "33",
+        "provinceName": "Tỉnh Hưng Yên",
+        "wardCode": "12127",
+        "wardName": "Phường Thượng Hồng",
+        "streetAddress": "Vinh Long",
+        "fullShippingAddress": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên",
+        "address": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên"
+      },
+      "total": 1950000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:53:04.986Z",
+      "id": 7
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "33",
+        "provinceName": "Tỉnh Hưng Yên",
+        "wardCode": "12127",
+        "wardName": "Phường Thượng Hồng",
+        "streetAddress": "Vinh Long",
+        "fullShippingAddress": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên",
+        "address": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên"
+      },
+      "total": 1950000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:53:13.767Z",
+      "id": 8
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "33",
+        "provinceName": "Tỉnh Hưng Yên",
+        "wardCode": "12127",
+        "wardName": "Phường Thượng Hồng",
+        "streetAddress": "Vinh Long",
+        "fullShippingAddress": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên",
+        "address": "Vinh Long,\nPhường Thượng Hồng,\nTỉnh Hưng Yên"
+      },
+      "total": 1950000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:53:15.616Z",
+      "id": 9
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:53:59.377Z",
+      "id": 10
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:54:27.410Z",
+      "id": 11
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:54:48.912Z",
+      "id": 12
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:55:24.007Z",
+      "id": 13
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:55:33.212Z",
+      "id": 14
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T12:56:40.742Z",
+      "id": 15
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "19",
+        "provinceName": "Tỉnh Thái Nguyên",
+        "wardCode": "1981",
+        "wardName": "Xã Vĩnh Thông",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên",
+        "address": "Vinh Long Tan Quoi,\nXã Vĩnh Thông,\nTỉnh Thái Nguyên"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T13:02:06.336Z",
+      "id": 16
+    },
+    {
+      "userId": 3,
+      "customerInfo": {
+        "fullname": "dangkhoa",
+        "email": "khoa@gmail.com",
+        "phone": "0916612354",
+        "note": "",
+        "provinceCode": "52",
+        "provinceName": "Tỉnh Gia Lai",
+        "wardCode": "21661",
+        "wardName": "Phường Hoài Nhơn Tây",
+        "streetAddress": "Vinh Long Tan Quoi",
+        "fullShippingAddress": "Vinh Long Tan Quoi,\nPhường Hoài Nhơn Tây,\nTỉnh Gia Lai",
+        "address": "Vinh Long Tan Quoi,\nPhường Hoài Nhơn Tây,\nTỉnh Gia Lai"
+      },
+      "total": 1300000,
+      "paymentMethod": "COD",
+      "status": "pending",
+      "createdAt": "2026-07-04T13:15:42.152Z",
+      "id": 17
     }
   ],
   "orderItems": [
@@ -192,6 +458,69 @@
       "quantity": 12,
       "price": 1100000,
       "id": 4
+    },
+    {
+      "orderId": 7,
+      "productId": 5,
+      "quantity": 3,
+      "price": 650000,
+      "id": 5
+    },
+    {
+      "orderId": 8,
+      "productId": 5,
+      "quantity": 3,
+      "price": 650000,
+      "id": 6
+    },
+    {
+      "orderId": 9,
+      "productId": 5,
+      "quantity": 3,
+      "price": 650000,
+      "id": 7
+    },
+    {
+      "orderId": 10,
+      "productId": 5,
+      "quantity": 2,
+      "price": 650000,
+      "id": 8
+    },
+    {
+      "orderId": 11,
+      "productId": 5,
+      "quantity": 2,
+      "price": 650000,
+      "id": 9
+    },
+    {
+      "orderId": 13,
+      "productId": 5,
+      "quantity": 2,
+      "price": 650000,
+      "id": 10
+    },
+    {
+      "orderId": 14,
+      "productId": 5,
+      "quantity": 2,
+      "price": 650000,
+      "id": 11
+    },
+    {
+      "orderId": 15,
+      "productId": 5,
+      "quantity": 2,
+      "price": 650000,
+      "id": 12
+    },
+    {
+      "orderId": 17,
+      "productId": 5,
+      "quantity": 2,
+      "price": 650000,
+      "id": 13
     }
   ]
 }

@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartRequest } from "../../redux/actions/cartActions";
 import { createOrderRequest, resetCreateOrder } from "../../redux/actions/orderActions";
-import { updateProfileRequest } from "../../redux/actions/authActions";
 import ProductImage from "../../components/ProductImage";
 import EmptyState from "../../components/EmptyState";
 import ShippingAddressFields from "../../components/ShippingAddressFields";
@@ -115,21 +114,20 @@ function Checkout() {
     saveShippingAddress(user.id, shippingAddress);
 
     dispatch(
-      updateProfileRequest({
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        shippingAddress,
-      })
-    );
-
-    dispatch(
       createOrderRequest({
-        fullname: form.fullname.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        note: form.note.trim(),
-        ...shippingAddress,
-        address: fullShippingAddress,
+        customerInfo: {
+          fullname: form.fullname.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          note: form.note.trim(),
+          ...shippingAddress,
+          address: fullShippingAddress,
+        },
+        profileUpdate: {
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          shippingAddress,
+        },
       })
     );
   };

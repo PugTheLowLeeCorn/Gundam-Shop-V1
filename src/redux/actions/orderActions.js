@@ -26,9 +26,9 @@ export const fetchAdminOrdersRequest = () => ({
   type: FETCH_ADMIN_ORDERS_REQUEST,
 });
 
-export const createOrderRequest = (customerInfo) => ({
+export const createOrderRequest = (payload) => ({
   type: CREATE_ORDER_REQUEST,
-  payload: customerInfo,
+  payload,
 });
 
 export const updateOrderStatusRequest = (id, status) => ({

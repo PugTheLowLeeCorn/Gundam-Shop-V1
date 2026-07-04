@@ -1,4 +1,4 @@
-import { call, put, takeLatest, select } from "redux-saga/effects";
+import { call, put, takeLatest, takeLeading, select, all } from "redux-saga/effects";
 import {
   FETCH_CUSTOMER_ORDERS_REQUEST,
   FETCH_CUSTOMER_ORDERS_SUCCESS,
@@ -21,6 +21,10 @@ import * as productService from "../../services/productService";
 import * as authService from "../../services/authService";
 import * as cartService from "../../services/cartService";
 import { requireCustomer, requireAdmin } from "../utils/permissions";
+import { saveShippingAddress } from "../../utils/shippingAddress";
+import {
+  UPDATE_PROFILE_SUCCESS,
+} from "../actions/authActions";
 
 const selectUser = (state) => state.auth.user;
 const selectCartItems = (state) => state.cart.data;
@@ -87,6 +91,7 @@ function* createOrderSaga(action) {
     const user = yield select(selectUser);
     requireCustomer(user);
 
+    const { customerInfo, profileUpdate } = action.payload;
     const cartItems = yield select(selectCartItems);
 
     if (!cartItems.length) {
@@ -95,6 +100,9 @@ function* createOrderSaga(action) {
 
     const productRes = yield call(productService.fetchProducts);
     const products = productRes.data;
+    const quantityByProductId = new Map(
+      products.map((product) => [product.id, product.quantity])
+    );
 
     for (const item of cartItems) {
       const product = products.find((p) => p.id === item.productId);
@@ -103,9 +111,11 @@ function* createOrderSaga(action) {
         throw new Error("One or more products in your cart are no longer available");
       }
 
-      if (product.quantity < item.quantity) {
+      const availableQuantity = quantityByProductId.get(product.id) ?? 0;
+
+      if (availableQuantity < item.quantity) {
         throw new Error(
-          `Insufficient stock for "${product.name}". Only ${product.quantity} available.`
+          `Insufficient stock for "${product.name}". Only ${availableQuantity} available.`
         );
       }
     }
@@ -118,7 +128,7 @@ function* createOrderSaga(action) {
 
     const orderRes = yield call(orderService.createOrder, {
       userId: user.id,
-      customerInfo: action.payload,
+      customerInfo,
       total,
       paymentMethod: "COD",
       status: "pending",
@@ -137,9 +147,35 @@ function* createOrderSaga(action) {
         price: product.price,
       });
 
-      const newQuantity = Math.max(0, product.quantity - item.quantity);
+      const newQuantity = Math.max(
+        0,
+        (quantityByProductId.get(product.id) ?? 0) - item.quantity
+      );
+      quantityByProductId.set(product.id, newQuantity);
       yield call(productService.patchProductQuantity, product.id, newQuantity);
       yield call(cartService.removeCartItem, item.id);
+    }
+
+    if (profileUpdate) {
+      const profileRes = yield call(authService.updateUser, user.id, profileUpdate);
+
+      const updatedUser = {
+        id: profileRes.data.id,
+        username: profileRes.data.username,
+        fullname: profileRes.data.fullname,
+        role: profileRes.data.role,
+        email: profileRes.data.email || "",
+        phone: profileRes.data.phone || "",
+        shippingAddress: profileRes.data.shippingAddress || null,
+      };
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      if (updatedUser.shippingAddress) {
+        saveShippingAddress(updatedUser.id, updatedUser.shippingAddress);
+      }
+
+      yield put({ type: UPDATE_PROFILE_SUCCESS, payload: updatedUser });
     }
 
     yield put({ type: CREATE_ORDER_SUCCESS, payload: orderRes.data });
@@ -177,11 +213,11 @@ function* fetchDashboardStatsSaga() {
     const user = yield select(selectUser);
     requireAdmin(user);
 
-    const [productsRes, customersRes, ordersRes] = yield [
+    const [productsRes, customersRes, ordersRes] = yield all([
       call(productService.fetchProducts),
       call(authService.fetchCustomers),
       call(orderService.fetchAllOrders),
-    ];
+    ]);
 
     const orders = ordersRes.data;
     const completedOrders = orders.filter((o) => o.status === "completed");
@@ -210,7 +246,7 @@ function* fetchDashboardStatsSaga() {
 export default function* orderSaga() {
   yield takeLatest(FETCH_CUSTOMER_ORDERS_REQUEST, fetchCustomerOrdersSaga);
   yield takeLatest(FETCH_ADMIN_ORDERS_REQUEST, fetchAdminOrdersSaga);
-  yield takeLatest(CREATE_ORDER_REQUEST, createOrderSaga);
+  yield takeLeading(CREATE_ORDER_REQUEST, createOrderSaga);
   yield takeLatest(UPDATE_ORDER_STATUS_REQUEST, updateOrderStatusSaga);
   yield takeLatest(FETCH_DASHBOARD_STATS_REQUEST, fetchDashboardStatsSaga);
 }
