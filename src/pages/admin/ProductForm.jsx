@@ -1,27 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+const emptyForm = {
+  name: "",
+  brand: "",
+  grade: "",
+  price: "",
+  quantity: "",
+  image: "",
+  description: "",
+  scale: "",
+};
+
+function buildForm(product) {
+  if (!product) return emptyForm;
+  return {
+    ...product,
+    image: product.image.replace("/images/", ""),
+    price: product.price,
+    quantity: product.quantity,
+  };
+}
 
 function ProductForm({ product, onSubmit, onClose }) {
-  const [form, setForm] = useState({
-    name: "",
-    brand: "",
-    grade: "",
-    price: "",
-    quantity: "",
-    image: "",
-    description: "",
-    scale: "",
-  });
-
-  useEffect(() => {
-    if (product) {
-      setForm({
-        ...product,
-        image: product.image.replace("/images/", ""),
-        price: product.price,
-        quantity: product.quantity,
-      });
-    }
-  }, [product]);
+  const [form, setForm] = useState(() => buildForm(product));
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

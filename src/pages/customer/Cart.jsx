@@ -1,42 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { useCart } from "../../hooks/useCart";
-import { useCartContext } from "../../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCartRequest,
+  removeCartItemRequest,
+  updateCartQuantityRequest,
+} from "../../redux/actions/cartActions";
 import ProductImage from "../../components/ProductImage";
 import EmptyState from "../../components/EmptyState";
 import { formatPrice } from "../../utils/formatPrice";
 
 function Cart() {
-  const { user } = useAuth();
-  const { getCartDetail, removeCartItem, updateQuantity } = useCart();
-  const { refreshCartCount } = useCartContext();
-
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const loadCart = async () => {
-    setLoading(true);
-    const data = await getCartDetail(user.id);
-    setItems(data);
-    setLoading(false);
-    await refreshCartCount();
-  };
+  const dispatch = useDispatch();
+  const items = useSelector((state) => state.cart.data);
+  const loading = useSelector((state) => state.cart.loading);
 
   useEffect(() => {
-    loadCart();
-  }, []);
+    dispatch(fetchCartRequest());
+  }, [dispatch]);
 
-  const handleDelete = async (id) => {
-    await removeCartItem(id);
-    loadCart();
+  const handleDelete = (id) => {
+    dispatch(removeCartItemRequest(id));
   };
 
-  const handleQuantityChange = async (id, newQty, stock) => {
-    if (newQty < 1) return;
-    if (newQty > stock) return;
-    await updateQuantity(id, newQty);
-    loadCart();
+  const handleQuantityChange = (id, newQty, stock) => {
+    if (newQty < 1 || newQty > stock) return;
+    dispatch(updateCartQuantityRequest(id, newQty));
   };
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -85,9 +74,7 @@ function Cart() {
                   <div className="flex-1 min-w-0">
                     <h2 className="font-display text-lg font-bold mb-1 truncate">{item.name}</h2>
                     <p className="text-gundam-accent font-bold mb-1">{formatPrice(item.price)}</p>
-                    <p className="text-xs text-gundam-muted mb-4">
-                      {item.stock} in stock
-                    </p>
+                    <p className="text-xs text-gundam-muted mb-4">{item.stock} in stock</p>
 
                     <div className="flex flex-wrap items-center gap-4">
                       <div className="flex items-center gap-2 bg-gundam-surface rounded-full border border-white/10">

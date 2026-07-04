@@ -1,5 +1,6 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/actions/authActions";
 
 const NAV_ITEMS = [
   { to: "/admin", label: "Dashboard", icon: "📊" },
@@ -9,12 +10,19 @@ const NAV_ITEMS = [
 ];
 
 function AdminLayout() {
-  const { logout, user } = useAuth();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
 
   const isActive = (path) => {
     if (path === "/admin") return location.pathname === "/admin";
     return location.pathname.startsWith(path);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
   };
 
   return (
@@ -51,7 +59,7 @@ function AdminLayout() {
           >
             ← Back to Store
           </Link>
-          <button onClick={logout} className="w-full btn-ghost text-sm text-red-400 border-red-400/20">
+          <button onClick={handleLogout} className="w-full btn-ghost text-sm text-red-400 border-red-400/20">
             Logout
           </button>
         </div>

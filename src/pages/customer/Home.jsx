@@ -1,26 +1,20 @@
 import { useEffect, useState, useMemo } from "react";
-import { useProducts } from "../../hooks/useProducts";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsRequest } from "../../redux/actions/productActions";
 import ProductGrid from "../../components/ProductGrid";
 import ProductImage from "../../components/ProductImage";
 import { GRADES } from "../../utils/grades";
 
 function Home() {
-  const { getAllProducts } = useProducts();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.data);
+  const loading = useSelector((state) => state.product.loading);
   const [search, setSearch] = useState("");
   const [activeGrade, setActiveGrade] = useState(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      const data = await getAllProducts();
-      setProducts(data);
-      setLoading(false);
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProductsRequest());
+  }, [dispatch]);
 
   const filteredProducts = useMemo(() => {
     let result = products;

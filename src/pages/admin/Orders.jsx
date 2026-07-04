@@ -1,31 +1,36 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAdminOrdersRequest,
+  updateOrderStatusRequest,
+} from "../../redux/actions/orderActions";
 import { formatPrice } from "../../utils/formatPrice";
 
 const STATUS_STYLES = {
   pending: "bg-yellow-500/20 text-yellow-400",
   shipping: "bg-blue-500/20 text-blue-400",
   completed: "bg-green-500/20 text-green-400",
+  cancelled: "bg-red-500/20 text-red-400",
 };
 
-function Orders() {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+const STATUS_OPTIONS = [
+  { value: "pending", label: "Pending" },
+  { value: "shipping", label: "Shipping" },
+  { value: "completed", label: "Completed" },
+  { value: "cancelled", label: "Cancelled" },
+];
 
-  const loadOrders = async () => {
-    setLoading(true);
-    const response = await axios.get("http://localhost:8000/orders");
-    setOrders(response.data.reverse());
-    setLoading(false);
-  };
+function Orders() {
+  const dispatch = useDispatch();
+  const orders = useSelector((state) => state.order.adminOrders);
+  const loading = useSelector((state) => state.order.loading);
 
   useEffect(() => {
-    loadOrders();
-  }, []);
+    dispatch(fetchAdminOrdersRequest());
+  }, [dispatch]);
 
-  const updateStatus = async (id, status) => {
-    await axios.patch(`http://localhost:8000/orders/${id}`, { status });
-    loadOrders();
+  const handleStatusChange = (id, status) => {
+    dispatch(updateOrderStatusRequest(id, status));
   };
 
   return (
@@ -64,7 +69,7 @@ function Orders() {
                     <td className="p-4 font-medium">{formatPrice(order.total)}</td>
                     <td className="p-4 text-gundam-muted">{order.paymentMethod || "COD"}</td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs capitalize ${STATUS_STYLES[order.status]}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs capitalize ${STATUS_STYLES[order.status] || STATUS_STYLES.pending}`}>
                         {order.status}
                       </span>
                     </td>
@@ -73,13 +78,15 @@ function Orders() {
                     </td>
                     <td className="p-4">
                       <select
-                        value={order.status}
-                        onChange={(e) => updateStatus(order.id, e.target.value)}
-                        className="input-field !rounded-lg !py-2 !text-sm"
+                        value={order.status || "pending"}
+                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        className="bg-gundam-surface text-white border border-white/20 rounded-lg py-2 px-3 text-sm min-w-[130px] appearance-auto cursor-pointer"
                       >
-                        <option value="pending">Pending</option>
-                        <option value="shipping">Shipping</option>
-                        <option value="completed">Completed</option>
+                        {STATUS_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
                       </select>
                     </td>
                   </tr>

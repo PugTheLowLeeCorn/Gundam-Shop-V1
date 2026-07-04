@@ -1,31 +1,35 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCustomersRequest,
+  deleteCustomerRequest,
+} from "../../redux/actions/authActions";
 
 function Customers() {
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const loadCustomers = async () => {
-    setLoading(true);
-    const response = await axios.get("http://localhost:8000/users?role=customer");
-    setCustomers(response.data);
-    setLoading(false);
-  };
+  const dispatch = useDispatch();
+  const customers = useSelector((state) => state.auth.customers);
+  const loading = useSelector((state) => state.auth.customersLoading);
+  const error = useSelector((state) => state.auth.customersError);
 
   useEffect(() => {
-    loadCustomers();
-  }, []);
+    dispatch(fetchCustomersRequest());
+  }, [dispatch]);
 
-  const deleteCustomer = async (id) => {
+  const handleDelete = (id) => {
     if (!confirm("Delete this customer?")) return;
-    await axios.delete(`http://localhost:8000/users/${id}`);
-    loadCustomers();
+    dispatch(deleteCustomerRequest(id));
   };
 
   return (
     <div>
       <h1 className="font-display text-3xl font-bold mb-2">Customer Management</h1>
       <p className="text-gundam-muted mb-8">{customers.length} customers</p>
+
+      {error && (
+        <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+          {error}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20">
@@ -53,7 +57,7 @@ function Customers() {
                     <td className="p-4 text-gundam-muted">{customer.email}</td>
                     <td className="p-4">
                       <button
-                        onClick={() => deleteCustomer(customer.id)}
+                        onClick={() => handleDelete(customer.id)}
                         className="px-3 py-1 rounded-lg bg-red-500/20 text-red-400 text-xs hover:bg-red-500/30 transition-colors"
                       >
                         Delete

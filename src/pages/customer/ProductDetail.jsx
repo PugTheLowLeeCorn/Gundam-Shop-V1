@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useProducts } from "../../hooks/useProducts";
-import { useAuth } from "../../hooks/useAuth";
-import { useCart } from "../../hooks/useCart";
-import { useFavorite } from "../../hooks/useFavorite";
-import { useCartContext } from "../../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProductByIdRequest,
+  fetchProductsRequest,
+} from "../../redux/actions/productActions";
+import { addToCartRequest } from "../../redux/actions/cartActions";
+import {
+  checkFavoriteRequest,
+  toggleFavoriteRequest,
+} from "../../redux/actions/favoriteActions";
 import ProductImage from "../../components/ProductImage";
 import ProductGrid from "../../components/ProductGrid";
 import GradeBadge from "../../components/GradeBadge";
@@ -14,102 +18,57 @@ import { formatPrice } from "../../utils/formatPrice";
 function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getProductById, getAllProducts } = useProducts();
-  const { user } = useAuth();
-  const { addToCart } = useCart();
-  const { toggleFavorite } = useFavorite();
-  const { refreshCartCount } = useCartContext();
+  const dispatch = useDispatch();
 
-  const [product, setProduct] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [adding, setAdding] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+  const product = useSelector((state) => state.product.currentProduct);
+  const allProducts = useSelector((state) => state.product.data);
+  const detailLoading = useSelector((state) => state.product.detailLoading);
+  const isFavorite = useSelector((state) => state.favorite.isFavorite);
+  const actionLoading = useSelector((state) => state.cart.actionLoading);
+  const actionError = useSelector((state) => state.cart.actionError);
+
   const [cartMessage, setCartMessage] = useState("");
-  const [cartError, setCartError] = useState("");
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      setLoading(true);
-      setNotFound(false);
-
-      const data = await getProductById(id);
-
-      if (!data) {
-        setNotFound(true);
-        setProduct(null);
-        setLoading(false);
-        return;
-      }
-
-      setProduct(data);
-
-      const allProducts = await getAllProducts();
-      const related = allProducts.filter(
-        (p) => p.grade === data.grade && p.id !== data.id
-      );
-      setRelatedProducts(related);
-      setLoading(false);
-    };
-
-    fetchProduct();
-  }, [id]);
+    dispatch(fetchProductByIdRequest(id));
+    if (!allProducts.length) {
+      dispatch(fetchProductsRequest());
+    }
+  }, [id, dispatch, allProducts.length]);
 
   useEffect(() => {
-    const checkFavorite = async () => {
-      if (!user || !product) return;
+    if (product?.id) {
+      dispatch(checkFavoriteRequest(product.id));
+    }
+  }, [product?.id, user, dispatch]);
 
-      try {
-        const res = await axios.get(
-          `http://localhost:8000/favorites?userId=${user.id}&productId=${product.id}`
-        );
-        setIsFavorite(res.data.length > 0);
-      } catch {
-        setIsFavorite(false);
-      }
-    };
+  const relatedProducts = allProducts.filter(
+    (p) => product && p.grade === product.grade && p.id !== product.id
+  );
 
-    checkFavorite();
-  }, [user, product]);
-
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!user) {
       navigate("/login");
       return;
     }
+    if (user.role !== "customer" || !product || product.quantity <= 0) return;
 
-    if (user.role !== "customer") return;
-
-    if (product.quantity <= 0) return;
-
-    setAdding(true);
-    setCartError("");
-    try {
-      await addToCart(user.id, product.id);
-      await refreshCartCount();
-      setCartMessage("Added to cart!");
-      setTimeout(() => setCartMessage(""), 3000);
-    } catch (err) {
-      setCartError(err.message);
-    } finally {
-      setAdding(false);
-    }
+    dispatch(addToCartRequest(product.id));
+    setCartMessage("Added to cart!");
+    setTimeout(() => setCartMessage(""), 3000);
   };
 
-  const handleToggleFavorite = async () => {
+  const handleToggleFavorite = () => {
     if (!user) {
       navigate("/login");
       return;
     }
-
     if (user.role !== "customer") return;
-
-    await toggleFavorite(user.id, product.id);
-    setIsFavorite((prev) => !prev);
+    dispatch(toggleFavoriteRequest(product.id));
   };
 
-  if (loading) {
+  if (detailLoading) {
     return (
       <div className="min-h-screen hero-gradient flex items-center justify-center">
         <div className="w-10 h-10 border-2 border-gundam-accent border-t-transparent rounded-full animate-spin" />
@@ -117,7 +76,7 @@ function ProductDetail() {
     );
   }
 
-  if (notFound) {
+  if (!product) {
     return (
       <div className="min-h-screen hero-gradient flex items-center justify-center px-4">
         <div className="text-center max-w-md">
@@ -138,7 +97,6 @@ function ProductDetail() {
 
   return (
     <div>
-      {/* Hero Section */}
       <section className="relative min-h-[85vh] hero-gradient">
         <div className="absolute inset-0 cinematic-overlay" />
 
@@ -186,13 +144,13 @@ function ProductDetail() {
               <div className="flex flex-wrap gap-4 mb-6">
                 <button
                   onClick={handleAddToCart}
-                  disabled={adding || !inStock}
+                  disabled={actionLoading || !inStock}
                   className="btn-primary flex items-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
-                  {adding ? "Adding..." : !inStock ? "Out of Stock" : "Add to Cart"}
+                  {actionLoading ? "Adding..." : !inStock ? "Out of Stock" : "Add to Cart"}
                 </button>
 
                 <button
@@ -206,12 +164,12 @@ function ProductDetail() {
                 </button>
               </div>
 
-              {cartMessage && (
+              {cartMessage && !actionError && (
                 <p className="text-green-400 text-sm mb-4">{cartMessage}</p>
               )}
 
-              {cartError && (
-                <p className="text-red-400 text-sm mb-4">{cartError}</p>
+              {actionError && (
+                <p className="text-red-400 text-sm mb-4">{actionError}</p>
               )}
 
               <div className="flex items-center gap-2 text-sm">
@@ -228,7 +186,6 @@ function ProductDetail() {
         </div>
       </section>
 
-      {/* Specifications */}
       <section className="section-cream py-20">
         <div className="container mx-auto px-4 lg:px-8">
           <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Specifications</p>
@@ -261,7 +218,6 @@ function ProductDetail() {
         </div>
       </section>
 
-      {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="py-20 bg-gundam-dark">
           <div className="container mx-auto px-4 lg:px-8">

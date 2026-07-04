@@ -1,24 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { useCart } from "../hooks/useCart";
-import { useCartContext } from "../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCartRequest } from "../redux/actions/cartActions";
 import ProductImage from "./ProductImage";
 import GradeBadge from "./GradeBadge";
 import { formatPrice } from "../utils/formatPrice";
 
 function ProductCard({ product, variant = "dark" }) {
-  const { user } = useAuth();
-  const { addToCart } = useCart();
-  const { refreshCartCount } = useCartContext();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const actionLoading = useSelector((state) => state.cart.actionLoading);
+  const actionError = useSelector((state) => state.cart.actionError);
   const navigate = useNavigate();
-  const [adding, setAdding] = useState(false);
-  const [error, setError] = useState("");
 
   const isLight = variant === "light";
   const isSoldOut = product.quantity === 0;
 
-  const handleAddToCart = async (e) => {
+  const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -31,16 +28,7 @@ function ProductCard({ product, variant = "dark" }) {
 
     if (user.role !== "customer") return;
 
-    setAdding(true);
-    setError("");
-    try {
-      await addToCart(user.id, product.id);
-      await refreshCartCount();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setAdding(false);
-    }
+    dispatch(addToCartRequest(product.id));
   };
 
   return (
@@ -90,12 +78,12 @@ function ProductCard({ product, variant = "dark" }) {
       </Link>
 
       <div className="px-5 pb-5">
-        {error && (
-          <p className="text-red-400 text-xs mb-2">{error}</p>
+        {actionError && (
+          <p className="text-red-400 text-xs mb-2">{actionError}</p>
         )}
         <button
           onClick={handleAddToCart}
-          disabled={adding || isSoldOut}
+          disabled={actionLoading || isSoldOut}
           className={`w-full text-sm py-2.5 flex items-center justify-center gap-2 rounded-full font-semibold transition-all ${
             isSoldOut
               ? "bg-gray-600/50 text-gray-400 cursor-not-allowed"
@@ -107,7 +95,7 @@ function ProductCard({ product, variant = "dark" }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
           )}
-          {adding ? "Adding..." : isSoldOut ? "Out of Stock" : "Add to Cart"}
+          {actionLoading ? "Adding..." : isSoldOut ? "Out of Stock" : "Add to Cart"}
         </button>
       </div>
     </div>

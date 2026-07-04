@@ -112,6 +112,11 @@
       "userId": 2,
       "productId": 1,
       "id": 1
+    },
+    {
+      "userId": 3,
+      "productId": 3,
+      "id": 2
     }
   ],
   "orders": [
@@ -139,7 +144,7 @@
     {
       "userId": 3,
       "total": 12000000,
-      "status": "pending",
+      "status": "completed",
       "createdAt": "2026-06-20T06:27:31.557Z",
       "id": 4
     },
@@ -154,7 +159,7 @@
       },
       "total": 13200000,
       "paymentMethod": "COD",
-      "status": "pending",
+      "status": "shipping",
       "createdAt": "2026-06-20T11:12:39.338Z",
       "id": 5
     }

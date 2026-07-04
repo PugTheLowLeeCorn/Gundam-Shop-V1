@@ -1,53 +1,72 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { useCart } from "../../hooks/useCart";
-import { useOrders } from "../../hooks/useOrders";
-import { useProducts } from "../../hooks/useProducts";
-import { useCartContext } from "../../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCartRequest } from "../../redux/actions/cartActions";
+import { createOrderRequest, resetCreateOrder } from "../../redux/actions/orderActions";
+import { updateProfileRequest } from "../../redux/actions/authActions";
 import ProductImage from "../../components/ProductImage";
 import EmptyState from "../../components/EmptyState";
+import ShippingAddressFields from "../../components/ShippingAddressFields";
 import { formatPrice } from "../../utils/formatPrice";
 import { validateEmail, validatePhone } from "../../utils/validation";
+import {
+  buildFullShippingAddress,
+  emptyShippingAddress,
+  resolveShippingAddress,
+  saveShippingAddress,
+} from "../../utils/shippingAddress";
 
 function Checkout() {
-  const { user } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { getCartDetail } = useCart();
-  const { createOrder } = useOrders();
-  const { getAllProducts } = useProducts();
-  const { refreshCartCount } = useCartContext();
+  const user = useSelector((state) => state.auth.user);
+  const items = useSelector((state) => state.cart.data);
+  const loading = useSelector((state) => state.cart.loading);
+  const { createLoading, createError, createSuccess } = useSelector(
+    (state) => state.order
+  );
 
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const savedAddress = resolveShippingAddress(user);
 
   const [form, setForm] = useState({
     fullname: user?.fullname || "",
-    email: "",
-    phone: "",
-    address: "",
+    email: user?.email || "",
+    phone: user?.phone || "",
     note: "",
   });
+
+  const [address, setAddress] = useState(() => ({
+    ...emptyShippingAddress(),
+    ...(savedAddress || {}),
+  }));
 
   const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
-    const loadCart = async () => {
-      setLoading(true);
-      const data = await getCartDetail(user.id);
-      setItems(data);
-      setLoading(false);
-    };
-    loadCart();
-  }, [user.id]);
+    dispatch(fetchCartRequest());
+    dispatch(resetCreateOrder());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (createSuccess) {
+      navigate("/orders", { state: { orderSuccess: true } });
+    }
+  }, [createSuccess, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setFieldErrors((prev) => ({ ...prev, [name]: "" }));
-    setError("");
+  };
+
+  const handleAddressChange = (nextAddress) => {
+    setAddress(nextAddress);
+    setFieldErrors((prev) => ({
+      ...prev,
+      provinceCode: "",
+      wardCode: "",
+      streetAddress: "",
+    }));
   };
 
   const validateForm = () => {
@@ -64,36 +83,55 @@ function Checkout() {
     } else if (!validatePhone(form.phone)) {
       errors.phone = "Invalid phone number";
     }
-    if (!form.address.trim()) errors.address = "Shipping address is required";
+    if (!address.provinceCode) errors.provinceCode = "Province is required";
+    if (!address.wardCode) errors.wardCode = "Ward is required";
+    if (!address.streetAddress.trim()) {
+      errors.streetAddress = "Street address is required";
+    }
 
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setSubmitting(true);
-    setError("");
+    const fullShippingAddress = buildFullShippingAddress(
+      address.streetAddress,
+      address.wardName,
+      address.provinceName
+    );
 
-    try {
-      const products = await getAllProducts();
-      await createOrder(user.id, items, products, {
+    const shippingAddress = {
+      provinceCode: address.provinceCode,
+      provinceName: address.provinceName,
+      wardCode: address.wardCode,
+      wardName: address.wardName,
+      streetAddress: address.streetAddress.trim(),
+      fullShippingAddress,
+    };
+
+    saveShippingAddress(user.id, shippingAddress);
+
+    dispatch(
+      updateProfileRequest({
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        shippingAddress,
+      })
+    );
+
+    dispatch(
+      createOrderRequest({
         fullname: form.fullname.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
-        address: form.address.trim(),
         note: form.note.trim(),
-      });
-
-      await refreshCartCount();
-      navigate("/orders", { state: { orderSuccess: true } });
-    } catch (err) {
-      setError(err.message || "Checkout failed. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+        ...shippingAddress,
+        address: fullShippingAddress,
+      })
+    );
   };
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -180,19 +218,11 @@ function Checkout() {
                   )}
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label className="text-sm text-gundam-muted mb-1.5 block">Shipping Address *</label>
-                  <input
-                    name="address"
-                    value={form.address}
-                    onChange={handleChange}
-                    className="input-field !rounded-xl"
-                    placeholder="Street, district, city"
-                  />
-                  {fieldErrors.address && (
-                    <p className="text-red-400 text-xs mt-1">{fieldErrors.address}</p>
-                  )}
-                </div>
+                <ShippingAddressFields
+                  value={address}
+                  onChange={handleAddressChange}
+                  errors={fieldErrors}
+                />
 
                 <div className="sm:col-span-2">
                   <label className="text-sm text-gundam-muted mb-1.5 block">Note (optional)</label>
@@ -256,18 +286,18 @@ function Checkout() {
                 <p className="text-xs text-gundam-muted mt-1">Pay when you receive your kit</p>
               </div>
 
-              {error && (
+              {createError && (
                 <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                  {error}
+                  {createError}
                 </div>
               )}
 
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={createLoading}
                 className="w-full btn-primary"
               >
-                {submitting ? "Placing Order..." : "Place Order (COD)"}
+                {createLoading ? "Placing Order..." : "Place Order (COD)"}
               </button>
 
               <Link

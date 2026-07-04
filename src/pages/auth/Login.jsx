@@ -1,71 +1,45 @@
-import { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import { loginRequest } from "../../redux/actions/authActions";
 
 function Login() {
-  const { loginUser } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { user, loading, error } = useSelector((state) => state.auth);
+  const wasLoading = useRef(false);
 
   const [form, setForm] = useState({
     username: "",
     password: "",
   });
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    if (wasLoading.current && !loading && user && !error) {
+      navigate(user.role === "admin" ? "/admin" : "/");
+    }
+    wasLoading.current = loading;
+  }, [loading, user, error, navigate]);
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const user = await loginUser(
-        form.username,
-        form.password
-      );
-
-      navigate(
-        user.role === "admin"
-          ? "/admin"
-          : "/"
-      );
-
-    } catch (err) {
-      setError(err.message || "Login failed");
-
-    } finally {
-      setLoading(false);
-    }
+    dispatch(loginRequest(form));
   };
-
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
-
-      {/* Background Banner */}
       <img
         src="/banner.png"
         alt="Gundam Background"
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
-
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/75" />
 
-
-      {/* Orange Glow Effect */}
       <div
         className="
           absolute
@@ -81,8 +55,6 @@ function Login() {
         "
       />
 
-
-      {/* Login Card */}
       <form
         onSubmit={handleSubmit}
         className="
@@ -100,25 +72,17 @@ function Login() {
           shadow-[0_0_45px_rgba(255,140,0,0.25)]
         "
       >
-
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="font-display text-4xl font-bold text-white mb-2">
             Welcome Back
           </h1>
-
           <p className="text-gundam-muted text-sm">
             Sign in to your GUNDAM.STORE account
           </p>
         </div>
 
-
-        {/* Username */}
         <div className="mb-4">
-          <label className="text-sm text-gundam-muted mb-2 block">
-            Username
-          </label>
-
+          <label className="text-sm text-gundam-muted mb-2 block">Username</label>
           <input
             type="text"
             name="username"
@@ -130,13 +94,8 @@ function Login() {
           />
         </div>
 
-
-        {/* Password */}
         <div className="mb-4">
-          <label className="text-sm text-gundam-muted mb-2 block">
-            Password
-          </label>
-
+          <label className="text-sm text-gundam-muted mb-2 block">Password</label>
           <input
             type="password"
             name="password"
@@ -148,62 +107,27 @@ function Login() {
           />
         </div>
 
-
-        {/* Error Message */}
         {error && (
-          <div
-            className="
-              mt-4
-              p-3
-              rounded-xl
-              border
-              border-red-500/30
-              bg-red-500/10
-              text-red-400
-              text-sm
-            "
-          >
+          <div className="mt-4 p-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm">
             {error}
           </div>
         )}
 
-
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="
-            w-full
-            btn-primary
-            mt-6
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-          "
+          className="w-full btn-primary mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading
-            ? "Signing in..."
-            : "Sign In"}
+          {loading ? "Signing in..." : "Sign In"}
         </button>
 
-
-        {/* Register Link */}
         <p className="text-center text-sm text-gundam-muted mt-6">
           Don't have an account?{" "}
-          <Link
-            to="/register"
-            className="
-              text-gundam-accent
-              hover:text-orange-300
-              transition-colors
-              font-medium
-            "
-          >
+          <Link to="/register" className="text-gundam-accent hover:text-orange-300 transition-colors font-medium">
             Register
           </Link>
         </p>
-
       </form>
-
     </div>
   );
 }

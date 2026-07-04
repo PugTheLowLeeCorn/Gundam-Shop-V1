@@ -1,41 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { useOrders } from "../../hooks/useOrders";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCustomerOrdersRequest } from "../../redux/actions/orderActions";
 import ProductImage from "../../components/ProductImage";
 import EmptyState from "../../components/EmptyState";
 import { formatPrice } from "../../utils/formatPrice";
+import { formatShippingAddressDisplay } from "../../utils/shippingAddress";
 
 const STATUS_STYLES = {
   pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   shipping: "bg-blue-500/20 text-blue-400 border-blue-500/30",
   completed: "bg-green-500/20 text-green-400 border-green-500/30",
+  cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
 function OrderHistory() {
-  const { user } = useAuth();
-  const { getOrderDetail } = useOrders();
+  const dispatch = useDispatch();
   const location = useLocation();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [successMessage, setSuccessMessage] = useState("");
+  const orders = useSelector((state) => state.order.customerOrders);
+  const loading = useSelector((state) => state.order.loading);
 
   useEffect(() => {
-    const loadOrders = async () => {
-      setLoading(true);
-      const data = await getOrderDetail(user.id);
-      setOrders(data.reverse());
-      setLoading(false);
-    };
-    loadOrders();
-  }, [user.id]);
+    dispatch(fetchCustomerOrdersRequest());
+  }, [dispatch]);
 
-  useEffect(() => {
-    if (location.state?.orderSuccess) {
-      setSuccessMessage("Your order has been placed successfully!");
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
+  const successMessage = location.state?.orderSuccess
+    ? "Your order has been placed successfully!"
+    : "";
 
   if (loading) {
     return (
@@ -44,6 +35,8 @@ function OrderHistory() {
       </div>
     );
   }
+
+  const sortedOrders = [...orders].reverse();
 
   return (
     <div className="min-h-screen bg-gundam-dark py-12">
@@ -72,7 +65,7 @@ function OrderHistory() {
           />
         ) : (
           <div className="space-y-6">
-            {orders.map((order) => (
+            {sortedOrders.map((order) => (
               <div
                 key={order.id}
                 className="bg-gundam-card border border-white/8 rounded-2xl p-6"
@@ -111,7 +104,9 @@ function OrderHistory() {
                     <p className="text-gundam-muted mb-2 text-xs uppercase tracking-wider">Shipping To</p>
                     <p className="font-medium">{order.customerInfo.fullname}</p>
                     <p className="text-gundam-muted">{order.customerInfo.phone}</p>
-                    <p className="text-gundam-muted">{order.customerInfo.address}</p>
+                    <p className="text-gundam-muted whitespace-pre-line">
+                      {formatShippingAddressDisplay(order.customerInfo)}
+                    </p>
                     {order.customerInfo.note && (
                       <p className="text-gundam-muted mt-1 italic">Note: {order.customerInfo.note}</p>
                     )}

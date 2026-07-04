@@ -1,32 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { useFavorite } from "../../hooks/useFavorite";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchFavoritesRequest,
+  toggleFavoriteRequest,
+} from "../../redux/actions/favoriteActions";
 import ProductImage from "../../components/ProductImage";
 import GradeBadge from "../../components/GradeBadge";
 import EmptyState from "../../components/EmptyState";
 import { formatPrice } from "../../utils/formatPrice";
 
 function Favorite() {
-  const { user } = useAuth();
-  const { getFavoriteDetail, toggleFavorite } = useFavorite();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const loadFavorite = async () => {
-    setLoading(true);
-    const data = await getFavoriteDetail(user.id);
-    setItems(data);
-    setLoading(false);
-  };
+  const dispatch = useDispatch();
+  const items = useSelector((state) => state.favorite.data);
+  const loading = useSelector((state) => state.favorite.loading);
 
   useEffect(() => {
-    loadFavorite();
-  }, []);
+    dispatch(fetchFavoritesRequest());
+  }, [dispatch]);
 
-  const handleRemove = async (productId) => {
-    await toggleFavorite(user.id, productId);
-    loadFavorite();
+  const handleRemove = (productId) => {
+    dispatch(toggleFavoriteRequest(productId));
   };
 
   if (loading) {

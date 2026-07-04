@@ -180,6 +180,27 @@ button {
   border-color: var(--color-gundam-accent);
 }
 
+/* Native <select>: keep dark closed control, readable light dropdown list */
+select {
+  color-scheme: light;
+}
+
+select option {
+  color: #111827;
+  background-color: #ffffff;
+}
+
+select option:checked {
+  color: #111827;
+  background-color: #e5e7eb;
+}
+
+select option:hover,
+select option:focus {
+  color: #111827;
+  background-color: #f3f4f6;
+}
+
 .section-cream {
   background-color: var(--color-gundam-cream);
   color: #1a1a1a;

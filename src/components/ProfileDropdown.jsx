@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/actions/authActions";
 
 function ProfileDropdown() {
-  const { user, logout } = useAuth();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -33,7 +35,7 @@ function ProfileDropdown() {
 
   const handleLogout = () => {
     setOpen(false);
-    logout();
+    dispatch(logout());
     navigate("/");
   };
 

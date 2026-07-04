@@ -1,0 +1,45 @@
+export const FETCH_CUSTOMER_ORDERS_REQUEST = "FETCH_CUSTOMER_ORDERS_REQUEST";
+export const FETCH_CUSTOMER_ORDERS_SUCCESS = "FETCH_CUSTOMER_ORDERS_SUCCESS";
+export const FETCH_CUSTOMER_ORDERS_FAILURE = "FETCH_CUSTOMER_ORDERS_FAILURE";
+
+export const FETCH_ADMIN_ORDERS_REQUEST = "FETCH_ADMIN_ORDERS_REQUEST";
+export const FETCH_ADMIN_ORDERS_SUCCESS = "FETCH_ADMIN_ORDERS_SUCCESS";
+export const FETCH_ADMIN_ORDERS_FAILURE = "FETCH_ADMIN_ORDERS_FAILURE";
+
+export const CREATE_ORDER_REQUEST = "CREATE_ORDER_REQUEST";
+export const CREATE_ORDER_SUCCESS = "CREATE_ORDER_SUCCESS";
+export const CREATE_ORDER_FAILURE = "CREATE_ORDER_FAILURE";
+
+export const UPDATE_ORDER_STATUS_REQUEST = "UPDATE_ORDER_STATUS_REQUEST";
+export const UPDATE_ORDER_STATUS_SUCCESS = "UPDATE_ORDER_STATUS_SUCCESS";
+export const UPDATE_ORDER_STATUS_FAILURE = "UPDATE_ORDER_STATUS_FAILURE";
+
+export const FETCH_DASHBOARD_STATS_REQUEST = "FETCH_DASHBOARD_STATS_REQUEST";
+export const FETCH_DASHBOARD_STATS_SUCCESS = "FETCH_DASHBOARD_STATS_SUCCESS";
+export const FETCH_DASHBOARD_STATS_FAILURE = "FETCH_DASHBOARD_STATS_FAILURE";
+
+export const fetchCustomerOrdersRequest = () => ({
+  type: FETCH_CUSTOMER_ORDERS_REQUEST,
+});
+
+export const fetchAdminOrdersRequest = () => ({
+  type: FETCH_ADMIN_ORDERS_REQUEST,
+});
+
+export const createOrderRequest = (customerInfo) => ({
+  type: CREATE_ORDER_REQUEST,
+  payload: customerInfo,
+});
+
+export const updateOrderStatusRequest = (id, status) => ({
+  type: UPDATE_ORDER_STATUS_REQUEST,
+  payload: { id, status },
+});
+
+export const fetchDashboardStatsRequest = () => ({
+  type: FETCH_DASHBOARD_STATS_REQUEST,
+});
+
+export const resetCreateOrder = () => ({
+  type: "RESET_CREATE_ORDER",
+});

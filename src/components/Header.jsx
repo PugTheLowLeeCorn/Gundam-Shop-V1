@@ -1,16 +1,24 @@
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { useCartContext } from "../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCartRequest } from "../redux/actions/cartActions";
 import ProfileDropdown from "./ProfileDropdown";
 
 function Header() {
-  const { user } = useAuth();
-  const { cartCount } = useCartContext();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const cartCount = useSelector((state) => state.cart.count);
   const location = useLocation();
   const navigate = useNavigate();
 
   const isHome = location.pathname === "/";
   const isTransparent = isHome || location.pathname.startsWith("/products/");
+
+  useEffect(() => {
+    if (user?.role === "customer") {
+      dispatch(fetchCartRequest());
+    }
+  }, [user, dispatch]);
 
   const handleSearchClick = () => {
     if (location.pathname === "/") {

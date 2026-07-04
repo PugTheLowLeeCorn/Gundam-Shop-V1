@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
-import { useProducts } from "../../hooks/useProducts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProductsRequest,
+  createProductRequest,
+  updateProductRequest,
+  deleteProductRequest,
+} from "../../redux/actions/productActions";
 import ProductForm from "./ProductForm";
 import ProductImage from "../../components/ProductImage";
 import GradeBadge from "../../components/GradeBadge";
 import { formatPrice } from "../../utils/formatPrice";
 
 function Products() {
-  const { getAllProducts, createProduct, updateProduct, deleteProduct } = useProducts();
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.data);
+  const loading = useSelector((state) => state.product.loading);
+  const mutationError = useSelector((state) => state.product.mutationError);
+
   const [openForm, setOpenForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const loadProducts = async () => {
-    setLoading(true);
-    const data = await getAllProducts();
-    setProducts(data);
-    setLoading(false);
-  };
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    dispatch(fetchProductsRequest());
+  }, [dispatch]);
 
   const handleAdd = () => {
     setEditingProduct(null);
@@ -33,20 +34,18 @@ function Products() {
     setOpenForm(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     if (!confirm("Delete this product?")) return;
-    await deleteProduct(id);
-    loadProducts();
+    dispatch(deleteProductRequest(id));
   };
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = (data) => {
     if (editingProduct) {
-      await updateProduct(editingProduct.id, data);
+      dispatch(updateProductRequest(editingProduct.id, data));
     } else {
-      await createProduct(data);
+      dispatch(createProductRequest(data));
     }
     setOpenForm(false);
-    loadProducts();
   };
 
   return (
@@ -60,6 +59,12 @@ function Products() {
           + Add Product
         </button>
       </div>
+
+      {mutationError && (
+        <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+          {mutationError}
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20">
@@ -121,6 +126,7 @@ function Products() {
 
       {openForm && (
         <ProductForm
+          key={editingProduct?.id ?? "new"}
           product={editingProduct}
           onSubmit={handleSubmit}
           onClose={() => setOpenForm(false)}
